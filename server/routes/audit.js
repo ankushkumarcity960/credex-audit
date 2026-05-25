@@ -1,8 +1,34 @@
-const express = require('express');
-const router = express.Router();
-const { saveAudit, getAudit } = require('../controllers/auditController');
+const express = require("express");
 
-router.post('/', saveAudit);
-router.get('/:id', getAudit);
+const router =
+express.Router();
 
-module.exports = router;
+const {
+
+runAudit,
+saveAudit,
+getAudit
+
+} = require(
+"../controllers/auditController"
+);
+
+
+router.post(
+"/run",
+runAudit
+);
+
+router.post(
+"/save",
+saveAudit
+);
+
+router.get(
+"/:id",
+getAudit
+);
+
+
+module.exports =
+router;
