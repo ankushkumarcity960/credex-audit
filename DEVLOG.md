@@ -36,3 +36,25 @@ Challenges:
 Resolved:
 - Installed Tailwind v3
 - Switched terminal to Git Bash
+
+## May 25
+
+Hours worked: 5–6
+
+Completed:
+- Configured Supabase
+- Fixed CORS issues
+- Added audit calculation API
+- Connected React frontend to Express backend
+- Integrated Axios requests
+- Displayed monthly cost and potential savings
+
+Challenges:
+- nodemon not installed
+- Invalid Supabase URL
+- CORS mismatch (3000 vs 5173)
+
+Resolved:
+- Installed nodemon
+- Configured .env correctly
+- Updated CLIENT_URL to localhost:5173
