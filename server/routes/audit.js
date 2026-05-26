@@ -1,32 +1,64 @@
-const express = require("express");
+const express =
+require("express");
 
 const router =
 express.Router();
+
 
 const {
 
 runAudit,
 saveAudit,
-getAudit
+getAudit,
+getHistory,
+deleteAudit
 
-} = require(
+}
+
+=
+
+require(
 "../controllers/auditController"
 );
 
+
+/* Run Audit */
 
 router.post(
 "/run",
 runAudit
 );
 
+
+/* Save Audit */
+
 router.post(
 "/save",
 saveAudit
 );
 
+
+/* Get History */
+
+router.get(
+"/history",
+getHistory
+);
+
+
+/* Get One Audit */
+
 router.get(
 "/:id",
 getAudit
+);
+
+router.delete(
+
+"/:id",
+
+deleteAudit
+
 );
 
 

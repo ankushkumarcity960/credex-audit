@@ -1,5 +1,5 @@
-const { v4: uuidv4 } = require('uuid');
-const { createClient } = require('@supabase/supabase-js');
+const { v4: uuidv4 } = require("uuid");
+const { createClient } = require("@supabase/supabase-js");
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -16,7 +16,7 @@ const pricing = {
 };
 
 
-/* ---------- AUDIT CALCULATION ---------- */
+/* ---------- RUN AUDIT + SAVE ---------- */
 
 exports.runAudit = async (req, res) => {
 
@@ -30,11 +30,42 @@ exports.runAudit = async (req, res) => {
     const potentialSavings =
       monthlyCost * 0.2;
 
+    const auditId = uuidv4();
+
+    const { error } =
+      await supabase
+
+      .from("audits")
+
+      .insert([{
+
+        id: auditId,
+
+        teamSize,
+
+        tool,
+
+        monthlyCost,
+
+        potentialSavings,
+
+        created_at: new Date()
+
+      }]);
+
+    if(error)
+      throw error;
+
     res.json({
 
+      auditId,
+
       teamSize,
+
       tool,
+
       monthlyCost,
+
       potentialSavings
 
     });
@@ -44,7 +75,10 @@ exports.runAudit = async (req, res) => {
   catch(err){
 
     res.status(500).json({
-      error: err.message
+
+      error:
+      err.message
+
     });
 
   }
@@ -55,77 +89,186 @@ exports.runAudit = async (req, res) => {
 
 /* ---------- SAVE AUDIT ---------- */
 
-exports.saveAudit = async (req, res) => {
+exports.saveAudit =
+async(req,res)=>{
 
-  try {
+try{
 
-    const auditId = uuidv4();
+const auditId =
+uuidv4();
 
-    const { error } =
-      await supabase
-      .from('audits')
-      .insert([{
+const { error } =
+await supabase
 
-        id: auditId,
-        ...req.body,
-        created_at: new Date()
+.from("audits")
 
-      }]);
+.insert([{
 
-    if(error) throw error;
+id:auditId,
 
-    res.json({ auditId });
+...req.body,
 
-  }
+created_at:
+new Date()
 
-  catch(err){
+}]);
 
-    res.status(500).json({
-      error: err.message
-    });
 
-  }
+if(error)
+throw error;
+
+
+res.json({
+auditId
+});
+
+}
+
+catch(err){
+
+res.status(500).json({
+
+error:
+err.message
+
+});
+
+}
 
 };
 
 
 
-/* ---------- GET AUDIT ---------- */
+/* ---------- GET SINGLE AUDIT ---------- */
 
-exports.getAudit = async (req,res)=>{
+exports.getAudit =
+async(req,res)=>{
 
-  try{
+try{
 
-    const { data,error }
-    = await supabase
+const { data,error } =
+await supabase
 
-    .from('audits')
+.from("audits")
 
-    .select('*')
+.select("*")
 
-    .eq(
-      'id',
-      req.params.id
-    )
 
-    .single();
+.order(
+"created_at",
+{ ascending:false }
+)
 
-    if(error)
-      throw error;
+.eq(
+"id",
+req.params.id
+)
 
-    res.json(data);
+.single();
 
-  }
 
-  catch(err){
+if(error)
+throw error;
 
-    res.status(404).json({
 
-      error:
-      'Audit not found'
+res.json(data);
 
-    });
+}
 
-  }
+catch(err){
+
+res.status(404).json({
+
+error:
+"Audit not found"
+
+});
+
+}
+
+};
+
+
+
+/* ---------- GET HISTORY ---------- */
+
+exports.getHistory =
+async(req,res)=>{
+
+try{
+
+const { data,error } =
+await supabase
+
+.from("audits")
+
+.select("*")
+
+.order(
+"created_at",
+{ ascending:false }
+);
+
+if(error)
+throw error;
+
+res.json(data);
+
+}
+
+catch(err){
+
+res.status(500).json({
+
+error:
+err.message
+
+});
+
+}
+
+};
+
+/* ---------- DELETE AUDIT ---------- */
+
+exports.deleteAudit =
+async(req,res)=>{
+
+try{
+
+const { error } =
+await supabase
+
+.from("audits")
+
+.delete()
+
+.eq(
+"id",
+req.params.id
+);
+
+if(error)
+throw error;
+
+res.json({
+
+message:
+"Deleted"
+
+});
+
+}
+
+catch(err){
+
+res.status(500).json({
+
+error:
+err.message
+
+});
+
+}
 
 };
