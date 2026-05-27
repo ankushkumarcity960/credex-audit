@@ -6,14 +6,10 @@ const supabase = createClient(
   process.env.SUPABASE_KEY
 );
 
-const pricing = {
-  ChatGPT: 20,
-  Claude: 20,
-  Gemini: 19,
-  Cursor: 20,
-  "Github Copilot": 10,
-  Windsurf: 15
-};
+const pricing =
+require("../db/pricingData");
+
+
 
 
 /* ---------- RUN AUDIT + SAVE ---------- */
@@ -32,29 +28,38 @@ exports.runAudit = async (req, res) => {
 
     const auditId = uuidv4();
 
-    const { error } =
-      await supabase
+  const { error } =
+await supabase
 
-      .from("audits")
+.from("audits")
 
-      .insert([{
+.insert([{
 
-        id: auditId,
+id: auditId,
 
-        teamSize,
+teamSize,
 
-        tool,
+tool,
 
-        monthlyCost,
+monthlyCost,
 
-        potentialSavings,
+potentialSavings,
 
-        created_at: new Date()
+created_at: new Date()
 
-      }]);
+}]);
 
-    if(error)
-      throw error;
+
+if(error){
+
+console.log(
+"SUPABASE ERROR:",
+error
+);
+
+throw error;
+
+}
 
     res.json({
 
@@ -72,16 +77,23 @@ exports.runAudit = async (req, res) => {
 
   }
 
-  catch(err){
+  
 
-    res.status(500).json({
+catch(err){
 
-      error:
-      err.message
+console.log(
+"AUDIT ERROR:",
+err
+);
 
-    });
+res.status(500).json({
 
-  }
+error:
+err.message
+
+});
+
+}
 
 };
 

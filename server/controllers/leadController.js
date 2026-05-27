@@ -19,18 +19,48 @@ exports.saveLead = async (req, res) => {
     if (error) throw error;
 
     await resend.emails.send({
-      from: 'audit@credex.rocks',
-      to: email,
-      subject: 'Your AI Spend Audit Report',
-      html: `
-        <h2>Your AI Spend Audit is ready!</h2>
-        <p>We found potential savings of <strong>$${totalSavings}/month</strong> for your team.</p>
-        <p>The Credex team will reach out shortly with more details.</p>
-      `
-    });
+
+from:'onboarding@resend.dev',
+
+to:email,
+
+subject:'Your AI Spend Audit Report',
+
+html:`
+
+<h2>Your AI Spend Audit is ready!</h2>
+
+<p>
+
+We found potential savings of
+
+<strong>
+
+$${totalSavings}/month
+
+</strong>
+
+</p>
+
+<p>
+
+The Credex team will reach out shortly.
+
+</p>
+
+`
+
+});
 
     res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  } 
+  catch (err) {
+
+console.log("LEAD ERROR:", err);
+
+res.status(500).json({
+error: err.message
+});
+
+}
 };

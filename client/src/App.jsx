@@ -26,7 +26,14 @@ function App() {
 
 const [teamSize,setTeamSize]=useState("");
 const [tool,setTool]=useState("");
+const [company,setCompany]=useState("");
+const [role,setRole]=useState("");
+const [summary,
+setSummary]
 
+=
+
+useState("");
 const [result,setResult]=useState(null);
 const [history,setHistory]=useState([]);
 const [search,setSearch]=useState("");
@@ -197,6 +204,36 @@ tool
 );
 
 setResult(res.data);
+
+const summaryRes =
+
+await axios.post(
+
+"http://localhost:5000/api/summary",
+
+{
+
+tool,
+
+teamSize,
+
+potentialSavings:
+
+res.data.potentialSavings,
+
+monthlyCost:
+
+res.data.monthlyCost
+
+}
+
+);
+
+setSummary(
+
+summaryRes.data.summary
+
+);
 
 await fetchHistory();
 
@@ -418,6 +455,54 @@ Login
 
 }
 
+const handleLeadSubmit = async () => {
+
+try {
+
+await axios.post(
+
+"http://localhost:5000/api/leads",
+
+{
+
+email,
+
+companyName: company,
+
+role,
+
+teamSize,
+
+auditId: result.auditId,
+
+totalSavings:
+
+result.potentialSavings
+
+}
+
+);
+
+alert("Lead saved!");
+
+setEmail("");
+setCompany("");
+setRole("");
+
+}
+
+catch(err){
+
+alert("Audit failed");
+
+console.log(err);
+
+alert("Error saving lead");
+
+}
+
+};
+
 
 
 return(
@@ -450,13 +535,14 @@ dark
 flex
 justify-between
 items-center
-max-w-5xl
+max-w-6xl
 mx-auto
-mb-8">
+mb-10">
 
+<div>
 
 <h1 className="
-text-4xl
+text-5xl
 font-bold">
 
 AI Spend Audit
@@ -464,15 +550,16 @@ AI Spend Audit
 </h1>
 
 
+</div>
+
+
+<div className="flex gap-4">
+
 <button
 
 onClick={()=>
 
-setDark(
-
-!dark
-
-)
+setDark(!dark)
 
 }
 
@@ -485,23 +572,10 @@ rounded"
 
 >
 
-{
-
-dark
-
-?
-
-"Light"
-
-:
-
-"Dark"
-
-}
-
-Mode
+{dark ? "Light Mode" : "Dark Mode"}
 
 </button>
+
 
 <button
 
@@ -528,6 +602,8 @@ Logout
 
 </div>
 
+</div>
+
 <div className="
 grid
 grid-cols-3
@@ -536,14 +612,41 @@ max-w-xl
 mx-auto
 mb-8">
 
-<div className="
-bg-white
+<div className={`
+
 p-4
 rounded
-shadow">
+shadow
 
-<p className="
-text-gray-500">
+${
+
+dark
+
+?
+
+"bg-gray-800 text-white"
+
+:
+
+"bg-white"
+
+}
+
+`}>
+
+<p className={
+
+dark
+
+?
+
+"text-gray-300"
+
+:
+
+"text-gray-500"
+
+}>
 
 Total Audits
 
@@ -561,11 +664,27 @@ font-bold">
 
 
 
-<div className="
-bg-white
+<div className={`
+
 p-4
 rounded
-shadow">
+shadow
+
+${
+
+dark
+
+?
+
+"bg-gray-800 text-white"
+
+:
+
+"bg-white"
+
+}
+
+`}>
 
 <p className="
 text-gray-500">
@@ -601,12 +720,27 @@ item.monthlyCost,
 </div>
 
 
+<div className={`
 
-<div className="
-bg-white
 p-4
 rounded
-shadow">
+shadow
+
+${
+
+dark
+
+?
+
+"bg-gray-800 text-white"
+
+:
+
+"bg-white"
+
+}
+
+`}>
 
 <p className="
 text-gray-500">
@@ -667,8 +801,29 @@ mb-4">
 
 <form
 onSubmit={handleSubmit}
-className="bg-white p-8 rounded-xl shadow max-w-xl mx-auto"
->
+className={`
+
+p-8
+rounded-xl
+shadow
+max-w-xl
+mx-auto
+
+${
+
+dark
+
+?
+
+"bg-gray-800 text-white"
+
+:
+
+"bg-white"
+
+}
+
+`}>
 
 
 <label>Team Size</label>
@@ -679,8 +834,29 @@ value={teamSize}
 onChange={(e)=>
 setTeamSize(e.target.value)
 }
-className="border p-3 w-full mb-5 rounded"
-/>
+className={`
+
+border
+p-3
+w-full
+mb-5
+rounded
+
+${
+
+dark
+
+?
+
+"bg-gray-700 text-white"
+
+:
+
+"bg-white text-black"
+
+}
+
+`}/>
 
 
 
@@ -694,8 +870,29 @@ onChange={(e)=>
 setTool(e.target.value)
 }
 
-className="border p-3 w-full mb-5 rounded"
+className={`
 
+border
+p-3
+w-full
+mb-5
+rounded
+
+${
+
+dark
+
+?
+
+"bg-gray-700 text-white"
+
+:
+
+"bg-white text-black"
+
+}
+
+`}
 >
 
 <option value="">
@@ -713,6 +910,23 @@ Claude
 <option value="Cursor">
 Cursor
 </option>
+
+<option value="Gemini">
+Gemini
+</option>
+
+<option value="GitHub Copilot">
+GitHub Copilot
+</option>
+
+<option value="Perplexity">
+Perplexity
+</option>
+
+<option value="Notion AI">
+Notion AI
+</option>
+
 
 </select>
 
@@ -758,8 +972,30 @@ result &&
 result.monthlyCost && (
 
 
-<div className="bg-white mt-8 p-6 rounded shadow max-w-xl mx-auto">
+<div className={`
 
+mt-8
+p-6
+rounded
+shadow
+max-w-xl
+mx-auto
+
+${
+
+dark
+
+?
+
+"bg-gray-800 text-white"
+
+:
+
+"bg-white"
+
+}
+
+`}>
 <h2 className="text-2xl font-bold mb-4">
 
 Results
@@ -774,18 +1010,326 @@ Monthly Cost: ${result.monthlyCost}
 Potential Savings: ${result.potentialSavings}
 </p>
 
+<p className="text-purple-600 font-bold">
+
+Annual Savings:
+
+$
+
+{
+
+result.potentialSavings * 12
+
+}
+
+</p>
+
+<p className="text-yellow-400 font-bold">
+
+Recommendation:
+
+{
+
+result.teamSize <= 5
+
+?
+
+"Use individual plans to reduce cost"
+
+:
+
+"Team plan is justified"
+
+}
+
+</p>
+
+<p className="text-sm text-gray-400">
+
+{
+
+result.teamSize <= 5
+
+?
+
+"Small teams usually overspend on premium subscriptions."
+
+:
+
+"Larger teams benefit from collaboration features."
+
+}
+
+</p>
+
 </div>
 
 )}
 
-<div className="
-bg-white
+{
+summary && (
+
+<div
+className={`
+
+mt-6
+p-6
+rounded
+shadow
+max-w-xl
+mx-auto
+
+${
+
+dark
+
+?
+
+"bg-gray-800 text-white"
+
+:
+
+"bg-white text-black"
+
+}
+
+`}
+
+>
+
+<h2 className="
+text-xl
+font-bold
+mb-3">
+
+AI Summary
+
+</h2>
+
+<p
+className={
+
+dark
+
+?
+
+"text-gray-300"
+
+:
+
+"text-gray-700"
+
+}
+
+>
+
+{summary}
+
+</p>
+
+</div>
+
+)
+
+}
+
+{
+
+result && (
+
+<div className={`
+
+mt-6
+p-6
+rounded
+shadow
+max-w-xl
+mx-auto
+
+${
+
+dark
+
+?
+
+"bg-gray-800 text-white"
+
+:
+
+"bg-white"
+
+}
+
+`}>
+
+<h2 className="font-bold text-2xl mb-4">
+
+Get Full Report
+
+</h2>
+
+
+<input
+
+type="email"
+
+placeholder="Email"
+
+value={email}
+
+onChange={(e)=>
+
+setEmail(e.target.value)
+
+}
+
+className={`
+
+border
+p-3
+w-full
+mb-3
+rounded
+
+${
+
+dark
+
+?
+
+"bg-gray-700 text-white"
+
+:
+
+"bg-white text-black"
+
+}
+
+`}
+/>
+
+
+<input
+
+placeholder="Company"
+
+value={company}
+
+onChange={(e)=>
+
+setCompany(e.target.value)
+
+}
+
+className={`
+
+border
+p-3
+w-full
+mb-3
+rounded
+
+${
+
+dark
+
+?
+
+"bg-gray-700 text-white"
+
+:
+
+"bg-white text-black"
+
+}
+
+`}
+/>
+
+
+<input
+
+placeholder="Role"
+
+value={role}
+
+onChange={(e)=>
+
+setRole(e.target.value)
+
+}
+
+className={`
+
+border
+p-3
+w-full
+mb-3
+rounded
+
+${
+
+dark
+
+?
+
+"bg-gray-700 text-white"
+
+:
+
+"bg-white text-black"
+
+}
+
+`}
+/>
+
+
+<button
+
+onClick={handleLeadSubmit}
+
+className="
+bg-green-500
+text-white
+w-full
+p-3
+rounded">
+
+Save Lead
+
+</button>
+
+</div>
+
+)
+
+}
+
+<div className={`
+
 mt-8
 p-6
 rounded
 shadow
 max-w-xl
-mx-auto">
+mx-auto
+
+${
+
+dark
+
+?
+
+"bg-gray-800 text-white"
+
+:
+
+"bg-white"
+
+}
+
+`}>
 
 <div className="
 flex
@@ -801,7 +1345,6 @@ Audit History
 
 </h2>
 
-
 <div className="flex gap-2">
 
 <select
@@ -816,10 +1359,27 @@ e.target.value
 
 }
 
-className="
+className={`
+
 border
 p-2
-rounded"
+rounded
+
+${
+
+dark
+
+?
+
+"bg-gray-700 text-white"
+
+:
+
+"bg-white text-black"
+
+}
+
+`}
 
 >
 
@@ -859,10 +1419,27 @@ e.target.value
 
 }
 
-className="
+className={`
+
 border
 p-2
-rounded"
+rounded
+
+${
+
+dark
+
+?
+
+"bg-gray-700 text-white"
+
+:
+
+"bg-white text-black"
+
+}
+
+`}
 
 />
 
@@ -887,6 +1464,36 @@ Export CSV
 </div>
 
 </div>
+
+
+    {
+history.length===0 && (
+
+<p
+className={
+
+dark
+
+?
+
+"text-gray-400 mb-4"
+
+:
+
+"text-gray-500 mb-4"
+
+}
+
+>
+
+No audits yet
+
+</p>
+
+)
+}
+
+
 
 {
 
@@ -1046,14 +1653,30 @@ Delete
 
 </div>
 
-<div className="
-bg-white
+<div className={`
+
 mt-8
 p-6
 rounded
 shadow
 max-w-xl
-mx-auto">
+mx-auto
+
+${
+
+dark
+
+?
+
+"bg-gray-800 text-white"
+
+:
+
+"bg-white"
+
+}
+
+`}>
 
 <h2 className="
 text-2xl
@@ -1067,9 +1690,9 @@ Spend Chart
 
 <BarChart
 
-width={600}
+width={500}
 
-height={300}
+height={250}
 
 data={history}
 
@@ -1081,11 +1704,42 @@ strokeDasharray="3 3"
 />
 
 <XAxis
+
 dataKey="tool"
+
+stroke={
+
+dark
+
+?
+
+"white"
+
+:
+
+"black"
+
+}
+
 />
 
-<YAxis/>
+<YAxis
 
+stroke={
+
+dark
+
+?
+
+"white"
+
+:
+
+"black"
+
+}
+
+/>
 <Tooltip
 
 formatter={(value)=>
@@ -1109,14 +1763,30 @@ radius={[8,8,0,0]}
 
 </div>
 
-<div className="
-bg-white
+<div className={`
+
 mt-8
 p-6
 rounded
 shadow
 max-w-xl
-mx-auto">
+mx-auto
+
+${
+
+dark
+
+?
+
+"bg-gray-800 text-white"
+
+:
+
+"bg-white"
+
+}
+
+`}>
 
 <h2 className="
 text-2xl
