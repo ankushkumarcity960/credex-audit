@@ -62,7 +62,7 @@ try{
 const res =
 await axios.get(
 
-"http://localhost:5000/api/audit/history"
+"https://credex-backend-zhpg.onrender.com/api/audit/history"
 
 );
 
@@ -194,8 +194,7 @@ setLoading(true);
 const res =
 await axios.post(
 
-"http://localhost:5000/api/audit/run",
-
+"https://credex-backend-zhpg.onrender.com/api/audit/run",
 {
 teamSize:Number(teamSize),
 tool
@@ -209,8 +208,7 @@ const summaryRes =
 
 await axios.post(
 
-"http://localhost:5000/api/summary",
-
+"https://credex-backend-zhpg.onrender.com/api/summary",
 {
 
 tool,
@@ -268,7 +266,7 @@ try{
 
 await axios.delete(
 
-`http://localhost:5000/api/audit/${id}`
+`https://credex-backend-zhpg.onrender.com/api/audit/${id}`
 
 );
 
@@ -461,8 +459,7 @@ try {
 
 await axios.post(
 
-"http://localhost:5000/api/leads",
-
+"https://credex-backend-zhpg.onrender.com/api/leads",
 {
 
 email,
