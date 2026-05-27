@@ -138,3 +138,17 @@ Resend
 
 AI:
 Groq API
+
+## Demo Login
+
+Email: test@gmail.com
+
+Password: 12345678
+
+## Live Demo
+
+Frontend:
+https://credex-audit-sepia.vercel.app
+
+Backend API:
+https://credex-backend-zhpg.onrender.com/api/health
